@@ -1,0 +1,130 @@
+Slip no – 17
+Q3. Construct an Android Application to accept a number and calculate Factorial and Sum of Digits of a given number using Context Menu.
+* Create menu folder under the res folder and create the file context_menu.xml copy the code
+* app\src\main\res\menu\context_menu.xml
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/action_factorial"
+        android:title="Calculate Factorial"/>
+    <item
+        android:id="@+id/action_sum_digits"
+        android:title="Calculate Sum of Digits"/>
+</menu>
+
+activity_main.xml
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    tools:context=".MainActivity">
+
+    <EditText
+        android:id="@+id/number_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter a number"
+        android:inputType="number" />
+
+    <Button
+        android:id="@+id/calculate_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/number_input"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="55dp"
+        android:layout_marginEnd="152dp"
+        android:text="Calculate" />
+
+    <TextView
+        android:id="@+id/result_text"
+        android:layout_width="311dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/calculate_button"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="52dp" />
+</RelativeLayout>
+
+MainActivity.java
+package com.example.activitylifecycle;
+
+
+import androidx.appcompat.app.AppCompatActivity;
+import android.os.Bundle;
+import android.view.ContextMenu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+
+public class MainActivity extends AppCompatActivity {
+
+    private EditText numberInput;
+    private TextView resultText;
+    private Button calculateButton;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        numberInput = findViewById(R.id.number_input);
+        resultText = findViewById(R.id.result_text);
+        calculateButton = findViewById(R.id.calculate_button);
+
+        registerForContextMenu(calculateButton);
+
+        calculateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openContextMenu(v);
+            }
+        });
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        getMenuInflater().inflate(R.menu.context_menu, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_factorial) {
+            calculateFactorial();
+            return true;
+        } else if (id == R.id.action_sum_digits) {
+            calculateSumOfDigits();
+            return true;
+        }
+        return super.onContextItemSelected(item);
+    }
+
+    private void calculateFactorial() {
+        // Calculate factorial here
+        // Retrieve the number from the EditText
+        int num = Integer.parseInt(numberInput.getText().toString());
+        int factorial = 1;
+        for (int i = 2; i <= num; i++) {
+            factorial *= i;
+        }
+        resultText.setText("Factorial: " + factorial);
+    }
+
+    private void calculateSumOfDigits() {
+        // Calculate sum of digits here
+        // Retrieve the number from the EditText
+        int num = Integer.parseInt(numberInput.getText().toString());
+        int sum = 0;
+        while (num > 0) {
+            sum += num % 10;
+            num /= 10;
+        }
+        resultText.setText("Sum of Digits: " + sum);
+    }
+}
+
